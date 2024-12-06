@@ -6,9 +6,9 @@ REPO_OWNER = 'shaikh-hammad'
 REPO_NAME = 'PLCReporting'
 COMMIT_MESSAGE = 'log upload'
 
-def git_upload(FILE_NAME):
+def git_upload(FILE_NAME, FILE_PATH):
     # Read the file content and encode it in base64
-    with open(FILE_NAME, 'rb') as file:
+    with open(FILE_PATH, 'rb') as file:
         content = base64.b64encode(file.read()).decode('utf-8')
 
     url = f'https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/logs/{FILE_NAME}'
@@ -26,9 +26,12 @@ def git_upload(FILE_NAME):
 
     if response.status_code == 201:
         print('File uploaded successfully!')
+        return True
     else:
         print(f'Failed to upload file: {response.status_code}')
         print(response.json())
+        return False
+
 
 # if __name__=="__main__":
-#     git_upload('test.log', 'test.log')
+#     git_upload('test.log')
