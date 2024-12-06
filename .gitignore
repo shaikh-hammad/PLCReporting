@@ -1,0 +1,4 @@
+*.log
+.idea-old/
+.git-old/
+plc-venv/
