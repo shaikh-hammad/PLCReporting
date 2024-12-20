@@ -4,3 +4,4 @@
 plc-venv/
 local_logs/
 __pycache__/
+.env

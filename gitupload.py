@@ -1,7 +1,10 @@
 import requests
-import base64, re
+import base64, re, os
+from dotenv import load_dotenv
 
-GITHUB_TOKEN = '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'
+load_dotenv()
+
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 REPO_OWNER = 'shaikh-hammad'
 REPO_NAME = 'PLCReporting'
 COMMIT_MESSAGE = 'log upload'
