@@ -2,3 +2,5 @@
 .idea-old/
 .git-old/
 plc-venv/
+local_logs/
+__pycache__/

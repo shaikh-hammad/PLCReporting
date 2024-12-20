@@ -9,7 +9,7 @@ app = FastAPI()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-async def logItem(line: str, id, eof):
+async def logItem(line: str, id, eof, test_status):
     # logger = logging.getLogger('my_logger')
     # logger.setLevel(logging.DEBUG)
     for handler in logger.handlers[:]:
@@ -19,14 +19,20 @@ async def logItem(line: str, id, eof):
     filepath = f"local_logs/{filename}"
     handler = logging.FileHandler(filepath)
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    if int(test_status) == 1:
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - TEST_CASE_SUCCESS - %(message)s')
+    elif int(test_status) == 0:
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - TEST_CASE_FAILURE - %(message)s')
+    else:
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
     logger.info(f"Request data: {line}")
 
     if eof == 'True':
-        return gitupload.git_upload(filename, filepath)
+        md_filename, md_filepath = gitupload.summarize_log_to_markdown(filepath, filename)
+        return gitupload.git_upload(md_filename, md_filepath)
     return True
 
 
@@ -36,11 +42,13 @@ async def log(request: Request):
     message = body.get('message')
     id = body.get("id")
     eof = body.get("eof")
+    test_status = body.get("test_status")
     if message is None or id is None or eof is None:
         return {"detail": "Fields 'message, id, eof' are required"}
-    if await logItem(message, id, eof) == False:
+    result, url = await logItem(message, id, eof, test_status) 
+    if result == False:
         return {"detail": "Result failed to log."}
-    return {"detail": "Result logged successfully!"}
+    return {"detail": "Result logged successfully!", "url": url}
 
 if __name__ == '__main__':
     import uvicorn
