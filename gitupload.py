@@ -2,7 +2,7 @@ import requests
 import base64, re, os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 REPO_OWNER = 'shaikh-hammad'
@@ -16,24 +16,36 @@ def git_upload(FILE_NAME, FILE_PATH):
 
     url = f'https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/logs/{FILE_NAME}'
 
-    payload = {
-        'message': COMMIT_MESSAGE,
-        'content': content
-    }
-
+    # print(GITHUB_TOKEN)
     headers = {
-        'Authorization': f'token {GITHUB_TOKEN}',
+        'Authorization': f'Bearer {GITHUB_TOKEN}',
         'Accept': 'application/vnd.github.v3+json'
     }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        sha = response.json()['sha']
+        payload = {
+            'message': COMMIT_MESSAGE,
+            'content': content,
+            'sha': sha
+        }
+    else:
+        payload = {
+            'message': COMMIT_MESSAGE,
+            'content': content
+        }
+
     response = requests.put(url, json=payload, headers=headers)
 
-    if response.status_code == 201:
+    if response.status_code == 201 or response.status_code == 200:
         print('File uploaded successfully!')
         return True, f"https://github.com/{REPO_OWNER}/{REPO_NAME}/blob/main/logs/{FILE_NAME}"
     else:
         print(f'Failed to upload file: {response.status_code}')
         print(response.json())
         return False, "failed"
+
 
 def summarize_log_to_markdown(log_filepath, log_filename):
     """

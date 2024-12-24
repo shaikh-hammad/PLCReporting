@@ -33,7 +33,7 @@ async def logItem(line: str, id, eof, test_status):
     if eof == 'True':
         md_filename, md_filepath = gitupload.summarize_log_to_markdown(filepath, filename)
         return gitupload.git_upload(md_filename, md_filepath)
-    return True
+    return True, "logged"
 
 
 @app.post("/log")
