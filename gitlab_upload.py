@@ -73,7 +73,7 @@ def summarize_log_to_markdown(log_filepath, log_filename, id):
     markdown summary with the counts and the full log content.
     """
     md_filename = log_filename.replace(".log", ".md")
-    md_filepath = f"local_logs/{md_filename}"
+    md_filepath = f"logs/{md_filename}"
     try:
         with open(log_filepath, 'r') as log_file:
             log_content = log_file.readlines()
