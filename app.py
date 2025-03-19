@@ -34,6 +34,9 @@ async def logItem(line: str, test_name,id, eof, test_status):
         result, url = gitupload.git_upload(md_filename, md_filepath)
         if result is True:
             try:
+                for handler in logger.handlers[:]:
+                    logger.removeHandler(handler)
+                    handler.close()
                 os.remove(filepath)
                 print('Local log file deleted successfully!')
             except Exception as e:
