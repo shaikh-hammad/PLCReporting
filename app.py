@@ -38,6 +38,7 @@ async def logItem(line: str, test_name,id, eof, test_status):
                     logger.removeHandler(handler)
                     handler.close()
                 os.remove(filepath)
+                os.remove(md_filepath)
                 print('Local log file deleted successfully!')
             except Exception as e:
                 print(f'Failed to delete local file: {e}')
