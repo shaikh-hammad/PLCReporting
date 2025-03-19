@@ -9,7 +9,7 @@ load_dotenv(override=True)
 # Use a GitLab personal access token from your environment variables.
 GITLAB_TOKEN = os.getenv('GITLAB_TOKEN')
 # For GitLab, the project is typically referenced as "namespace/project"
-REPO_OWNER = 'shaikh-hammad'
+REPO_OWNER = 'plc'
 REPO_NAME = 'PLCReporting'
 COMMIT_MESSAGE = 'log upload'
 
